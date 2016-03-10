@@ -10,3 +10,8 @@ class Receta(models.Model):
 	puntuacion_negativa = models.IntegerField(default=0)
 	fecha_creacion = models.DateField(auto_now=True)
 	usuario = models.ForeignKey(User)
+
+class PuntuacionRecetaUser(models.Model):
+	puntuacion = models.CharField(max_length=1)
+	receta = models.ForeignKey(Receta)
+	usuario = models.ForeignKey(User)

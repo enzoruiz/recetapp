@@ -18,14 +18,63 @@ class InicioView(TemplateView):
 	def post(self, request, *args, **kwargs):
 		if request.is_ajax():
 			if request.POST.get('opcion') == 'calificar':
+				pru = PuntuacionRecetaUser.objects.filter(usuario=User.objects.get(id=request.POST.get("usuario")), receta=Receta.objects.get(id=request.POST.get("id_receta")))
+				
 				if request.POST.get('tipo') == 'positivo':
-					receta = Receta.objects.get(id=request.POST.get('id_receta'))
-					receta.puntuacion_positiva = receta.puntuacion_positiva + 1
-					receta.save()
+					if len(pru) > 0:
+						# CADA USUARIO SOLO PUEDE CALIFICAR UNA VES POR RECETA
+						# PUEDE CAMBIAR SU CALIFICACION DE POSITIVA A NEGATIVA O VICEVERSA
+						if pru[0].puntuacion == 'N':
+							receta = Receta.objects.get(id=request.POST.get('id_receta'))
+							receta.puntuacion_positiva = receta.puntuacion_positiva + 1
+							receta.puntuacion_negativa = receta.puntuacion_negativa - 1
+							receta.save()
+
+							PuntuacionRecetaUser.objects.get(usuario=User.objects.get(id=request.POST.get("usuario")), receta=Receta.objects.get(id=request.POST.get("id_receta"))).delete()
+
+							p = PuntuacionRecetaUser()
+							p.puntuacion = 'P'
+							p.receta = receta
+							p.usuario = User.objects.get(id=receta.usuario.id)
+							p.save()
+					else:
+						receta = Receta.objects.get(id=request.POST.get('id_receta'))
+						receta.puntuacion_positiva = receta.puntuacion_positiva + 1
+						receta.save()
+
+						p = PuntuacionRecetaUser()
+						p.puntuacion = 'P'
+						p.receta = receta
+						p.usuario = User.objects.get(id=receta.usuario.id)
+						p.save()
+
 				else:
-					receta = Receta.objects.get(id=request.POST.get('id_receta'))
-					receta.puntuacion_negativa = receta.puntuacion_negativa + 1
-					receta.save()
+					if len(pru) > 0:
+						# CADA USUARIO SOLO PUEDE CALIFICAR UNA VES POR RECETA
+						# PUEDE CAMBIAR SU CALIFICACION DE POSITIVA A NEGATIVA O VICEVERSA
+						if pru[0].puntuacion == 'P':
+							receta = Receta.objects.get(id=request.POST.get('id_receta'))
+							receta.puntuacion_positiva = receta.puntuacion_positiva - 1
+							receta.puntuacion_negativa = receta.puntuacion_negativa + 1
+							receta.save()
+
+							PuntuacionRecetaUser.objects.get(usuario=User.objects.get(id=request.POST.get("usuario")), receta=Receta.objects.get(id=request.POST.get("id_receta"))).delete()
+
+							p = PuntuacionRecetaUser()
+							p.puntuacion = 'N'
+							p.receta = receta
+							p.usuario = User.objects.get(id=receta.usuario.id)
+							p.save()
+					else:
+						receta = Receta.objects.get(id=request.POST.get('id_receta'))
+						receta.puntuacion_negativa = receta.puntuacion_negativa + 1
+						receta.save()
+
+						p = PuntuacionRecetaUser()
+						p.puntuacion = 'N'
+						p.receta = receta
+						p.usuario = User.objects.get(id=receta.usuario.id)
+						p.save()
 
 				recetas = Receta.objects.all().extra(select={'resultado': 'puntuacion_positiva - puntuacion_negativa'}).values('id', 'titulo', 'descripcion', 'usuario__first_name', 'usuario__last_name', 'puntuacion_positiva', 'puntuacion_negativa', 'resultado', 'fecha_creacion').order_by('-resultado')
 				for re in recetas:
