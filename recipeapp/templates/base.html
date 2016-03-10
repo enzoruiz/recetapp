@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% load static %}
+	<meta charset="UTF-8">
+	
+	<link href="{% static 'css/bootstrap/bootstrap-theme.min.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'css/bootstrap/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'css/general/botonesFlat.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'css/general/navbarLogin.css' %}" rel="stylesheet" type="text/css"/>
+	{% block importCSS %}
+	{% endblock importCSS %}
+
+	<style>
+		body { padding-top: 70px; }
+	</style>
+	<title>App Comida {% block titulo %}{% endblock titulo %}</title>
+</head>
+<body>
+	
+	<nav class="navbar navbar-default navbar-fixed-top">
+	  	<div class="container-fluid">
+	    	<div class="navbar-header">
+		      	<a class="navbar-brand" href="{% url 'inicio' %}">
+		        	<img alt="Inicio" src="">
+		      	</a>
+    		</div>
+    		{% if user.is_authenticated %}
+	    		<ul class="nav navbar-nav navbar-right">
+	                <li class="dropdown">
+	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+	                        <span class="glyphicon glyphicon-user"></span> 
+	                        <strong>{{ user.username }}</strong>
+	                        <span class="glyphicon glyphicon-chevron-down"></span>
+	                    </a>
+	                    <ul class="dropdown-menu">
+	                        <li>
+	                            <div class="navbar-login">
+	                                <div class="row">
+	                                    <div class="col-lg-4">
+	                                        <p class="text-center">
+	                                            <span class="glyphicon glyphicon-user icon-size"></span>
+	                                        </p>
+	                                    </div>
+	                                    <div class="col-lg-8">
+	                                        <p class="text-left"><strong>{{ user.first_name }} {{ user.last_name }}</strong></p>
+	                                        <p class="text-left small">{{ user.email }}</p>
+	                                        <p class="text-left">
+	                                            <a href="#" class="btn btn-primary btn-block btn-sm">Actualizar Datos</a>
+	                                        </p>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </li>
+	                        <li class="divider"></li>
+	                        <li>
+	                            <div class="navbar-login navbar-login-session">
+	                                <div class="row">
+	                                    <div class="col-lg-12">
+                                        	<form action="{% url 'logout' %}">
+                                        		<p style="text-align:center;">
+                                            		<button type="submit" class="btn btn-danger btn-lg btn-pressure btn-sensitive"><span class="glyphicon glyphicon-off"></span> Cerrar Sesion</button>
+                                            	</p>
+                                            </form>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </li>
+	                    </ul>
+	                </li>
+	            </ul>
+    		{% endif %}
+
+	  	</div>
+	</nav>
+
+	{% block cuerpo %}
+	{% endblock cuerpo %}
+
+	<script src="{% static 'js/jquery/jquery-1.10.2.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/jquery/jquery-ui.min.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/jquery/jquery.validate.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/bootstrap/bootstrap.min.js' %}" type="text/javascript"></script>
+	{% block importJS %}
+	{% endblock importJS %}
+
+	{% block script %}
+	{% endblock script %}
+</body>
+</html>

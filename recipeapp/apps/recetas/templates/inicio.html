@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block importCSS %}
+	<link href="{% static 'css/general/colorgraph.css' %}" rel="stylesheet" type="text/css"/>
+{% endblock importCSS %}
+
+{% block cuerpo %}
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<form method="POST" action="{% url 'inicio' %}">
+					{% csrf_token %}
+					<textarea name="descripcion" id="descripcion" cols="30" rows="5" class="form-control input-lg" style="resize:none;" placeholder="Mi receta es..."></textarea>
+					<br>
+					<input type="submit" value="Registrar" class="btn btn-primary btn-block btn-lg btn-pressure btn-sensitive">
+					<input type="hidden" id="usuario" name="usuario" value="{{ user.id }}">
+				</form>
+				<hr class="colorgraph">
+				<div id="lista-recetas">
+					{% for receta in recetas %}
+						<div class="row">
+							<div class="col-md-2">
+								<strong class="label label-primary" style="text-align:center;">{{ receta.resultado }}</strong>
+								<button class="btn btn-success btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar('positivo', {{receta.id}})">{{ receta.puntuacion_positiva }}</button>
+								<br>
+								<button class="btn btn-danger btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar('negativo', {{receta.id}})">{{ receta.puntuacion_negativa }}</button>
+							</div>
+							<div class="col-md-10">{{ receta.descripcion }}</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="col-md-3"></div>
+		</div>
+	</div>
+
+{% endblock cuerpo %}
+
+{% block script %}
+	<script>
+
+		function calificar(tipo, id){
+			$.ajax({
+		        type: "POST",
+		        url: "",
+		        data: {
+		            csrfmiddlewaretoken: '{{ csrf_token }}',
+		            opcion: 'calificar',
+		            tipo: tipo,
+		            id_receta: id
+		        },
+		        success: function(data) {
+		        	var html = '';
+		        	for(var i=0; i<data.length; i++){
+		        		var resultado = data[i].fields.puntuacion_positiva - data[i].fields.puntuacion_negativa;
+		        		html += '<div class="row">';
+							html += '<div class="col-md-2">';
+								html += '<strong class="label label-primary" style="text-align:center;">'+resultado+'</strong>';
+								html += '<button class="btn btn-success btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar(\'positivo\', '+data[i].pk+')">'+data[i].fields.puntuacion_positiva+'</button>';
+								html += '<br>';
+								html += '<button class="btn btn-danger btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar(\'negativo\', '+data[i].pk+')">'+data[i].fields.puntuacion_negativa+'</button>';
+							html += '</div>';
+							html += '<div class="col-md-10">'+data[i].fields.descripcion+'</div>';
+						html += '</div>';
+		        	}
+					$('#lista-recetas').html(html);
+
+		        }
+		    });
+		}
+
+	</script>
+{% endblock script %}
