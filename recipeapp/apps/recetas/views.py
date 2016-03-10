@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.core import serializers
 from django.http import HttpResponse
 from .models import *
+import json
 
 # Create your views here.
 
@@ -25,9 +26,12 @@ class InicioView(TemplateView):
 					receta = Receta.objects.get(id=request.POST.get('id_receta'))
 					receta.puntuacion_negativa = receta.puntuacion_negativa + 1
 					receta.save()
-				
-				recetas = Receta.objects.all().extra(select={'resultado': "puntuacion_positiva - puntuacion_negativa"}).order_by('-resultado')
-				data = serializers.serialize('json', recetas)
+
+				recetas = Receta.objects.all().extra(select={'resultado': 'puntuacion_positiva - puntuacion_negativa'}).values('id', 'titulo', 'descripcion', 'usuario__first_name', 'usuario__last_name', 'puntuacion_positiva', 'puntuacion_negativa', 'resultado', 'fecha_creacion').order_by('-resultado')
+				for re in recetas:
+					re["fecha_creacion"] = re["fecha_creacion"].strftime("%d/%m/%Y")
+
+				data = json.dumps(list(recetas))
 				return HttpResponse(data, content_type="application/json")
 		else:
 			receta = Receta()

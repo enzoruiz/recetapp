@@ -4,7 +4,6 @@
 {% block importCSS %}
 	<link href="{% static 'css/general/colorgraph.css' %}" rel="stylesheet" type="text/css"/>
 	<link href="{% static 'css/general/cupones.css' %}" rel="stylesheet" type="text/css"/>
-	<link href="{% static 'css/general/botones_circulares.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock importCSS %}
 
 {% block cuerpo %}
@@ -83,31 +82,29 @@
 		        success: function(data) {
 		        	var html = '';
 		        	for(var i=0; i<data.length; i++){
-		        		var resultado = data[i].fields.puntuacion_positiva - data[i].fields.puntuacion_negativa;
-
 		        		html += '<div class="row">';
 					        html += '<div class="col-md-12">';
 					            html += '<div class="panel panel-default coupon">';
 					              	html += '<div class="panel-heading" id="head">';
 					                	html += '<div class="panel-title" id="title">';
-						                    html += '<label for="" class="label label-primary">'+ resultado + '</label>';
-						                    html += '<span>' + data[i].fields.titulo + '</span>';
+						                    html += '<label for="" class="label label-primary">'+ data[i].resultado + '</label>';
+						                    html += '<span>' + data[i].titulo + '</span>';
 					                	html += '</div>';
 					              	html += '</div>';
 					              	html += '<div class="panel-body">';
 						                html += '<img src="http://i.imgur.com/e07tg8R.png" class="coupon-img img-rounded">';
-						                html += '<div class="col-md-12">' + data[i].fields.descripcion + '</div>';
+						                html += '<div class="col-md-12">' + data[i].descripcion + '</div>';
 					              	html += '</div>';
 					              	html += '<div class="panel-footer">';
 					              		html += '<div class="row">';
 					              			html += '<div class="col-md-9">';
-					              				html += '<small>' + data[i].fields.fecha_creacion + '</small>';
+					              				html += '<small>' + data[i].fecha_creacion + '</small>';
 					              				html += '<br>';
-					              				html += '<label style="font-style:italic;">' + data[i].fields.usuario.first_name + ' ' + data[i].fields.usuario.last_name + '</label>';
+					              				html += '<label style="font-style:italic;">' + data[i].usuario__first_name + ' ' + data[i].usuario__last_name + '</label>';
 					              			html += '</div>';
 					              			html += '<div class="col-md-3" align="center">';
-					              				html += '<a href="javascript:void(0)"><i class="fa fa-thumbs-o-up fa-2x" onclick="calificar(\'positivo\', ' + data[i].pk + ')" style="margin-right:10px;"></i></a>';
-						                    	html += '<a href="javascript:void(0)"><i class="fa fa-thumbs-o-down fa-2x" onclick="calificar(\'negativo\', ' + data[i].pk + ')"></i></a>';
+					              				html += '<a href="javascript:void(0)"><i class="fa fa-thumbs-o-up fa-2x" onclick="calificar(\'positivo\', ' + data[i].id + ')" style="margin-right:10px;"></i></a>';
+						                    	html += '<a href="javascript:void(0)"><i class="fa fa-thumbs-o-down fa-2x" onclick="calificar(\'negativo\', ' + data[i].id + ')"></i></a>';
 					              			html += '</div>';
 					              		html += '</div>';
 					              	html += '</div>';
