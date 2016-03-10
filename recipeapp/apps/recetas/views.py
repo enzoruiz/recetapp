@@ -31,6 +31,7 @@ class InicioView(TemplateView):
 				return HttpResponse(data, content_type="application/json")
 		else:
 			receta = Receta()
+			receta.titulo = request.POST.get("titulo")
 			receta.descripcion = request.POST.get("descripcion")
 			receta.usuario = User.objects.get(id=request.POST.get("usuario"))
 			receta.save()

@@ -3,6 +3,8 @@
 
 {% block importCSS %}
 	<link href="{% static 'css/general/colorgraph.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'css/general/cupones.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'css/general/botones_circulares.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock importCSS %}
 
 {% block cuerpo %}
@@ -13,6 +15,8 @@
 			<div class="col-md-6">
 				<form method="POST" action="{% url 'inicio' %}">
 					{% csrf_token %}
+					<input type="text" class="form-control input-lg" name="titulo" id="titulo" placeholder="Nombre de la receta" maxlength="45">
+					<br>
 					<textarea name="descripcion" id="descripcion" cols="30" rows="5" class="form-control input-lg" style="resize:none;" placeholder="Mi receta es..."></textarea>
 					<br>
 					<input type="submit" value="Registrar" class="btn btn-primary btn-block btn-lg btn-pressure btn-sensitive">
@@ -20,17 +24,41 @@
 				</form>
 				<hr class="colorgraph">
 				<div id="lista-recetas">
+					
 					{% for receta in recetas %}
 						<div class="row">
-							<div class="col-md-2">
-								<strong class="label label-primary" style="text-align:center;">{{ receta.resultado }}</strong>
-								<button class="btn btn-success btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar('positivo', {{receta.id}})">{{ receta.puntuacion_positiva }}</button>
-								<br>
-								<button class="btn btn-danger btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar('negativo', {{receta.id}})">{{ receta.puntuacion_negativa }}</button>
-							</div>
-							<div class="col-md-10">{{ receta.descripcion }}</div>
-						</div>
+					        <div class="col-md-12">
+					            <div class="panel panel-default coupon">
+					              	<div class="panel-heading" id="head">
+					                	<div class="panel-title" id="title">
+						                    <label for="" class="label label-primary">{{ receta.resultado }}</label>
+						                    <span>{{ receta.titulo }}</span>
+					                	</div>
+					              	</div>
+					              	<div class="panel-body">
+						                <img src="http://i.imgur.com/e07tg8R.png" class="coupon-img img-rounded">
+						                <div class="col-md-12">
+						                    {{ receta.descripcion }}
+						                </div>
+					              	</div>
+					              	<div class="panel-footer">
+					              		<div class="row">
+					              			<div class="col-md-9">
+					              				<small>{{ receta.fecha_creacion|date:"SHORT_DATE_FORMAT" }}</small>
+					              				<br>
+					              				<label style="font-style:italic;">{{ user.first_name }} {{ user.last_name }}</label>
+					              			</div>
+					              			<div class="col-md-3" align="center">
+					              				<a href="javascript:void(0)"><i class="fa fa-thumbs-o-up fa-2x" onclick="calificar('positivo', {{ receta.id }})" style="margin-right:10px;"></i></a>
+						                    	<a href="javascript:void(0)"><i class="fa fa-thumbs-o-down fa-2x" onclick="calificar('negativo', {{ receta.id }})"></i></a>
+					              			</div>
+					              		</div>
+					              	</div>
+					            </div>
+					    	</div>
+					    </div>
 					{% endfor %}
+					
 				</div>
 			</div>
 			<div class="col-md-3"></div>
@@ -56,15 +84,36 @@
 		        	var html = '';
 		        	for(var i=0; i<data.length; i++){
 		        		var resultado = data[i].fields.puntuacion_positiva - data[i].fields.puntuacion_negativa;
+
 		        		html += '<div class="row">';
-							html += '<div class="col-md-2">';
-								html += '<strong class="label label-primary" style="text-align:center;">'+resultado+'</strong>';
-								html += '<button class="btn btn-success btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar(\'positivo\', '+data[i].pk+')">'+data[i].fields.puntuacion_positiva+'</button>';
-								html += '<br>';
-								html += '<button class="btn btn-danger btn-md btn-pressure btn-sensitive" style="width:100%" onclick="calificar(\'negativo\', '+data[i].pk+')">'+data[i].fields.puntuacion_negativa+'</button>';
-							html += '</div>';
-							html += '<div class="col-md-10">'+data[i].fields.descripcion+'</div>';
-						html += '</div>';
+					        html += '<div class="col-md-12">';
+					            html += '<div class="panel panel-default coupon">';
+					              	html += '<div class="panel-heading" id="head">';
+					                	html += '<div class="panel-title" id="title">';
+						                    html += '<label for="" class="label label-primary">'+ resultado + '</label>';
+						                    html += '<span>' + data[i].fields.titulo + '</span>';
+					                	html += '</div>';
+					              	html += '</div>';
+					              	html += '<div class="panel-body">';
+						                html += '<img src="http://i.imgur.com/e07tg8R.png" class="coupon-img img-rounded">';
+						                html += '<div class="col-md-12">' + data[i].fields.descripcion + '</div>';
+					              	html += '</div>';
+					              	html += '<div class="panel-footer">';
+					              		html += '<div class="row">';
+					              			html += '<div class="col-md-9">';
+					              				html += '<small>' + data[i].fields.fecha_creacion + '</small>';
+					              				html += '<br>';
+					              				html += '<label style="font-style:italic;">' + data[i].fields.usuario.first_name + ' ' + data[i].fields.usuario.last_name + '</label>';
+					              			html += '</div>';
+					              			html += '<div class="col-md-3" align="center">';
+					              				html += '<a href="javascript:void(0)"><i class="fa fa-thumbs-o-up fa-2x" onclick="calificar(\'positivo\', ' + data[i].pk + ')" style="margin-right:10px;"></i></a>';
+						                    	html += '<a href="javascript:void(0)"><i class="fa fa-thumbs-o-down fa-2x" onclick="calificar(\'negativo\', ' + data[i].pk + ')"></i></a>';
+					              			html += '</div>';
+					              		html += '</div>';
+					              	html += '</div>';
+					            html += '</div>';
+					    	html += '</div>';
+					    html += '</div>';
 		        	}
 					$('#lista-recetas').html(html);
 
