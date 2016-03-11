@@ -12,9 +12,11 @@
 		<div class="row">
 			<div class="col-md-3"></div>
 			<div class="col-md-6">
-				<form method="POST" action="{% url 'inicio' %}">
+				<form method="POST" action="{% url 'inicio' %}" enctype="multipart/form-data">
 					{% csrf_token %}
 					<input type="text" class="form-control input-lg" name="titulo" id="titulo" placeholder="Nombre de la receta" maxlength="45">
+					<br>
+					<input type="file" name="imagen" id="imagen">
 					<br>
 					<textarea name="descripcion" id="descripcion" cols="30" rows="5" class="form-control input-lg" style="resize:none;" placeholder="Mi receta es..."></textarea>
 					<br>
@@ -35,7 +37,7 @@
 					                	</div>
 					              	</div>
 					              	<div class="panel-body">
-						                <img src="http://i.imgur.com/e07tg8R.png" class="coupon-img img-rounded">
+						                <img src="{{ MEDIA_URL }}{{ receta.imagen }}" class="coupon-img img-rounded">
 						                <div class="col-md-12">
 						                    {{ receta.descripcion }}
 						                </div>
@@ -45,7 +47,7 @@
 					              			<div class="col-md-9">
 					              				<small>{{ receta.fecha_creacion|date:"SHORT_DATE_FORMAT" }}</small>
 					              				<br>
-					              				<label style="font-style:italic;">{{ user.first_name }} {{ user.last_name }}</label>
+					              				<label style="font-style:italic;">{{ receta.usuario.first_name }} {{ receta.usuario.last_name }}</label>
 					              			</div>
 					              			<div class="col-md-3" align="center">
 					              				<a href="javascript:void(0)"><i class="fa fa-thumbs-o-up fa-2x" onclick="calificar('positivo', {{ receta.id }})" style="margin-right:10px;"></i></a>
@@ -93,7 +95,7 @@
 					                	html += '</div>';
 					              	html += '</div>';
 					              	html += '<div class="panel-body">';
-						                html += '<img src="http://i.imgur.com/e07tg8R.png" class="coupon-img img-rounded">';
+						                html += '<img src="{{ MEDIA_URL }}' + data[i].imagen + '" class="coupon-img img-rounded">';
 						                html += '<div class="col-md-12">' + data[i].descripcion + '</div>';
 					              	html += '</div>';
 					              	html += '<div class="panel-footer">';

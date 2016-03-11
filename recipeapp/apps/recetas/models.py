@@ -9,6 +9,7 @@ class Receta(models.Model):
 	puntuacion_positiva = models.IntegerField(default=0)
 	puntuacion_negativa = models.IntegerField(default=0)
 	fecha_creacion = models.DateField(auto_now=True)
+	imagen = models.ImageField(upload_to="img-receta", blank=True, null=True)
 	usuario = models.ForeignKey(User)
 
 class PuntuacionRecetaUser(models.Model):

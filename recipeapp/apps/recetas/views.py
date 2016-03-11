@@ -76,15 +76,17 @@ class InicioView(TemplateView):
 						p.usuario = User.objects.get(id=receta.usuario.id)
 						p.save()
 
-				recetas = Receta.objects.all().extra(select={'resultado': 'puntuacion_positiva - puntuacion_negativa'}).values('id', 'titulo', 'descripcion', 'usuario__first_name', 'usuario__last_name', 'puntuacion_positiva', 'puntuacion_negativa', 'resultado', 'fecha_creacion').order_by('-resultado')
+				recetas = Receta.objects.all().extra(select={'resultado': 'puntuacion_positiva - puntuacion_negativa'}).values('id', 'titulo', 'descripcion', 'usuario__first_name', 'usuario__last_name', 'puntuacion_positiva', 'puntuacion_negativa', 'resultado', 'fecha_creacion', 'imagen').order_by('-resultado')
 				for re in recetas:
 					re["fecha_creacion"] = re["fecha_creacion"].strftime("%d/%m/%Y")
 
 				data = json.dumps(list(recetas))
 				return HttpResponse(data, content_type="application/json")
 		else:
+			print(request.POST.get("imagen"))
 			receta = Receta()
 			receta.titulo = request.POST.get("titulo")
+			receta.imagen = request.FILES['imagen']
 			receta.descripcion = request.POST.get("descripcion")
 			receta.usuario = User.objects.get(id=request.POST.get("usuario"))
 			receta.save()
