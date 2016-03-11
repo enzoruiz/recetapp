@@ -37,7 +37,11 @@
 					                	</div>
 					              	</div>
 					              	<div class="panel-body">
-						                <img src="{{ MEDIA_URL }}{{ receta.imagen }}" class="coupon-img img-rounded">
+					              		{% if receta.imagen != "" %}
+					              			<img src="{{ MEDIA_URL }}{{ receta.imagen }}" class="coupon-img img-rounded">
+					              		{% else %}
+											<img src="{{ MEDIA_URL }}img-receta/image-not-found.png" class="coupon-img img-rounded">
+					              		{% endif %}
 						                <div class="col-md-12">
 						                    {{ receta.descripcion }}
 						                </div>
@@ -95,7 +99,12 @@
 					                	html += '</div>';
 					              	html += '</div>';
 					              	html += '<div class="panel-body">';
-						                html += '<img src="{{ MEDIA_URL }}' + data[i].imagen + '" class="coupon-img img-rounded">';
+					              		if(data[i].imagen != ""){
+					              			html += '<img src="{{ MEDIA_URL }}' + data[i].imagen + '" class="coupon-img img-rounded">';
+					              		}
+					              		else{
+					              			html += '<img src="{{ MEDIA_URL }}img-receta/image-not-found.png" class="coupon-img img-rounded">';
+					              		}
 						                html += '<div class="col-md-12">' + data[i].descripcion + '</div>';
 					              	html += '</div>';
 					              	html += '<div class="panel-footer">';

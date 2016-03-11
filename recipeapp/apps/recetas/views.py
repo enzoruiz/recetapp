@@ -83,10 +83,14 @@ class InicioView(TemplateView):
 				data = json.dumps(list(recetas))
 				return HttpResponse(data, content_type="application/json")
 		else:
-			print(request.POST.get("imagen"))
 			receta = Receta()
 			receta.titulo = request.POST.get("titulo")
-			receta.imagen = request.FILES['imagen']
+			try:
+				receta.imagen = request.FILES['imagen']
+			except Exception:
+				print("NO SUBIO IMAGEN PARA RECETA")
+				pass
+			
 			receta.descripcion = request.POST.get("descripcion")
 			receta.usuario = User.objects.get(id=request.POST.get("usuario"))
 			receta.save()
