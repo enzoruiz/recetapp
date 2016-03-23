@@ -35,7 +35,7 @@ class InicioView(TemplateView):
 							p = PuntuacionRecetaUser()
 							p.puntuacion = 'P'
 							p.receta = receta
-							p.usuario = User.objects.get(id=receta.usuario.id)
+							p.usuario = User.objects.get(id=request.POST.get("usuario"))
 							p.save()
 					else:
 						receta = Receta.objects.get(id=request.POST.get('id_receta'))
@@ -45,7 +45,7 @@ class InicioView(TemplateView):
 						p = PuntuacionRecetaUser()
 						p.puntuacion = 'P'
 						p.receta = receta
-						p.usuario = User.objects.get(id=receta.usuario.id)
+						p.usuario = User.objects.get(id=request.POST.get("usuario"))
 						p.save()
 
 				else:
@@ -63,7 +63,7 @@ class InicioView(TemplateView):
 							p = PuntuacionRecetaUser()
 							p.puntuacion = 'N'
 							p.receta = receta
-							p.usuario = User.objects.get(id=receta.usuario.id)
+							p.usuario = User.objects.get(id=request.POST.get("usuario"))
 							p.save()
 					else:
 						receta = Receta.objects.get(id=request.POST.get('id_receta'))
@@ -73,7 +73,7 @@ class InicioView(TemplateView):
 						p = PuntuacionRecetaUser()
 						p.puntuacion = 'N'
 						p.receta = receta
-						p.usuario = User.objects.get(id=receta.usuario.id)
+						p.usuario = User.objects.get(id=request.POST.get("usuario"))
 						p.save()
 
 				recetas = Receta.objects.all().extra(select={'resultado': 'puntuacion_positiva - puntuacion_negativa'}).values('id', 'titulo', 'descripcion', 'usuario__first_name', 'usuario__last_name', 'puntuacion_positiva', 'puntuacion_negativa', 'resultado', 'fecha_creacion', 'imagen').order_by('-resultado')
